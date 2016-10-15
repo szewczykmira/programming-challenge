@@ -1,40 +1,41 @@
 # there are n levels: debug, info, warn, error
-LEVELS = [:debug, :info, :warning, :error]
 
 # logger class, as parameter accepts only string or symbol
 class Logger
-    def initialize(level, name="logger")
-        unless LEVELS.include? level
-            raise ArgumentError.new("Accepts only debug, info, warning, error")
+
+    class LevelError < ArgumentError
+        def initialize
+            super("Accepts only " + LEVELS.to_s)
         end
+    end
+
+    LEVELS = [:debug, :info, :warning, :error]
+    
+    def initialize(level, name="logger")
+        raise LevelError unless LEVELS.include? level
         @level = level
         @name = name
     end
 
     def debug(msg)
-        if @level == :debug
-            display(msg)
-        end
+        display(msg, :debug)
     end
 
     def info(msg)
-        if [:info, :debug].include? @level
-            display(msg)
-        end
+        display(msg, :info)
     end
 
     def warning(msg)
-        unless @level == :error
-            display(msg)
-        end
+        display(msg, :warning)
     end
 
     def error(msg)
-        display(msg)
+        display(msg, :error)
     end
 
     private
-    def display(msg)
-        puts "#{Time.now.strftime("%Y-%m-%d %H:%M:%S")} #{@name} [#{@level}]: #{msg}"
+    def display(msg, level)
+        return unless LEVELS.index(level) >= LEVELS.index(@level)
+        puts "#{Time.now.strftime("%Y-%m-%d %H:%M:%S")} #{@name} [#{level}]: #{msg}"
     end
 end
