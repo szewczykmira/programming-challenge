@@ -7,8 +7,12 @@ class Reader
         end
         @file_path = file_path
 
-        @csv_array = get_from_file.uniq {|u| u.first}
+        @csv_array = get_from_file
         nil
+    end
+
+    def csv_array
+        @csv_array
     end
 
     def create_file
@@ -40,5 +44,7 @@ class Reader
         CSV.foreach(@file_path) do |row|
             array << [row.first, row.last.gsub(',', '.').gsub(' ', '').to_f]
         end
+        array.uniq {|u| u.first}.sort { |a,b|
+             (Date.parse a.first) <=> (Date.parse b.first)}
     end
 end
