@@ -7,7 +7,7 @@ class Reader
         end
         @file_path = file_path
 
-        @csv_array = get_from_file
+        @csv_array = get_from_file.uniq {|u| u.first}
         nil
     end
 
