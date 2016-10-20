@@ -22,20 +22,23 @@ class Reader
     end
 
     def find_min
-        @csv_array.map { |i| i.last.to_f }.min
+        @csv_array.map { |i| i.last}.min
     end
 
     def find_max
-        @csv_array.map { |i| i.last.to_f }.max
+        @csv_array.map { |i| i.last }.max
     end
 
     def find_average
-        @csv_array.map { |i| i.last.to_f}.reduce(:+) / @csv_array.size
+        @csv_array.map { |i| i.last}.reduce(:+) / @csv_array.size
     end
 
     private
 
     def get_from_file
-        arr_of_dates = CSV.read(@file_path)
+        array = []
+        CSV.foreach(@file_path) do |row|
+            array << [row.first, row.last.gsub(',', '.').gsub(' ', '').to_f]
+        end
     end
 end
